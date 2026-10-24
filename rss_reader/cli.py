@@ -259,6 +259,11 @@ def main(argv: list[str] | None = None) -> int:
             u = ep["url"].replace("wget ", "").split("?")[0]
             urls.append(u)
 
+        if not os.path.isdir(downloaddir) or not os.access(downloaddir, os.W_OK | os.X_OK):
+            print(f"downloaddir not writable: {downloaddir} (not mounted?)", file=sys.stderr)
+            print(f"Check with: mount | grep {downloaddir}; in WSL: sudo mount -t drvfs D: {downloaddir}", file=sys.stderr)
+            return 1
+
         if args.dryrun:
             print(f"DRYRUN: wget -P {downloaddir} {' '.join(urls)}")
         else:
